@@ -11,10 +11,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
+    restaurant = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True,
+    )
 
     class Meta:
         model = Menu
-        fields = ("id", "date_upload", "restaurant", "description", "voters")
+        fields = ("id", "date_upload", "restaurant", "description")
 
 
 class MenuVotingSerializer(serializers.ModelSerializer):
