@@ -10,13 +10,16 @@ class Restaurant(models.Model):
 
 
 class Menu(models.Model):
-    date_upload = models.DateField(auto_now_add=True, unique_for_date=True)
+    date_upload = models.DateField(auto_now_add=True)
     description = models.TextField()
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
-        ordering = ("date_upload",)
-        unique_together = ("date_upload", "restaurant")
+        ordering = ("-date_upload",)
+        unique_together = (("date_upload", "restaurant"),)
 
     def __str__(self) -> str:
         return f"{self.restaurant.name} - {self.date_upload}"
