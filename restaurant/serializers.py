@@ -17,6 +17,18 @@ class MenuSerializer(serializers.ModelSerializer):
         fields = ("id", "date_upload", "restaurant", "description", "voters")
 
 
+class MenuVotingSerializer(serializers.ModelSerializer):
+    restaurant = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True,
+    )
+    num_votes = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Menu
+        fields = ("restaurant", "num_votes")
+
+
 class RestaurantSerializer(serializers.ModelSerializer):
 
     class Meta:

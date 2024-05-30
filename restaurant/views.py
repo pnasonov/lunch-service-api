@@ -1,4 +1,9 @@
-from rest_framework import mixins
+from django.db.models import Count
+from rest_framework import mixins, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from django.utils.timezone import now
 
@@ -7,8 +12,20 @@ from restaurant.serializers import (
     RestaurantSerializer,
     RestaurantDetailSerializer,
     MenuSerializer,
+    MenuVotingSerializer,
     EmployeeSerializer,
 )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_voting_results(request: Request) -> Response:
+    queryset = Menu.objects.filter(date_upload=now().date()).annotate(
+        num_votes=Count("voters")
+    )
+    serializer = MenuVotingSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class EmployeeViewSet(
@@ -26,8 +43,11 @@ class MenuViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
-    queryset = Menu.objects.all()
+    queryset = Menu.objects.select_related("restaurant").prefetch_related(
+        "voters"
+    )
     serializer_class = MenuSerializer
+    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class RestaurantViewSet(
