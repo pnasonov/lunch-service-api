@@ -2,12 +2,23 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 from django.utils.timezone import now
 
-from restaurant.models import Restaurant, Menu
+from restaurant.models import Restaurant, Menu, Employee
 from restaurant.serializers import (
     RestaurantSerializer,
     RestaurantDetailSerializer,
     MenuSerializer,
+    EmployeeSerializer,
 )
+
+
+class EmployeeViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class MenuViewSet(
