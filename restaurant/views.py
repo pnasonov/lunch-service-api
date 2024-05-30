@@ -8,6 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 from django.utils.timezone import now
 
 from restaurant.models import Restaurant, Menu, Employee
+from restaurant.permissions import IsAdminOrIfAuthenticatedReadOnly
 from restaurant.serializers import (
     RestaurantSerializer,
     RestaurantDetailSerializer,
@@ -35,7 +36,7 @@ class EmployeeViewSet(
 ):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class MenuViewSet(
@@ -47,7 +48,7 @@ class MenuViewSet(
         "voters"
     )
     serializer_class = MenuSerializer
-    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class RestaurantViewSet(
@@ -58,7 +59,7 @@ class RestaurantViewSet(
 ):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         if self.action == "retrieve":
