@@ -21,8 +21,11 @@ from restaurant.serializers import (
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_voting_results(request: Request) -> Response:
-    queryset = Menu.objects.filter(date_upload=now().date()).annotate(
-        num_votes=Count("voters")
+    queryset = (
+        Menu.objects.select_related("restaurant")
+        .prefetch_related("voters")
+        .filter(date_upload=now().date())
+        .annotate(num_votes=Count("voters"))
     )
     serializer = MenuVotingSerializer(queryset, many=True)
 
